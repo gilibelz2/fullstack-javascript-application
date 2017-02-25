@@ -1,4 +1,4 @@
 /**
  * Created by Gili Belz on 25/02/2017.
  */
-import './config';
+console.log('hello world!!!');
