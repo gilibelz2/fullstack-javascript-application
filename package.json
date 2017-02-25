@@ -1,0 +1,19 @@
+{
+  "name": "spa-plus",
+  "version": "1.0.0",
+  "description": "fullstack javascript application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gilibelz2/fullstack-spa-plus.git"
+  },
+  "author": "Gili Belz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gilibelz2/fullstack-spa-plus/issues"
+  },
+  "homepage": "https://github.com/gilibelz2/fullstack-spa-plus#readme"
+}
