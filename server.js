@@ -2,7 +2,7 @@
  * Created by Gili Belz on 25/02/2017.
  */
 import config from './config';
-import apiRouter from './api';
+//import apiRouter from './api';
 import express from 'express';
 //import fs from 'fs';
 
@@ -16,7 +16,7 @@ server.get('/', (req, res) => {
    });
 });
 
-server.use('/api', apiRouter);
+//server.use('/api', apiRouter);
 server.use(express.static('public'));
 
 /*server.get('/about.html', (req, res) => {
