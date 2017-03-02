@@ -2,7 +2,12 @@
  * Created by Gili Belz on 02/03/2017.
  */
 import React from 'react';
+import axios from 'axios';
+//import ReactDOM from 'react-dom';
 import Header from './Header';
+import ContestPreview from './ContestPreview';
+
+//import data from '../testData';
 
 //class base component
 //with state
@@ -16,18 +21,28 @@ class App extends React.Component{
     //}
     //state with stage 2
     state = {
-        pageHeader: 'Naming Contests'
+        pageHeader: 'Naming Contests',
+        contests: []
     };
     //for the console: $r.setState({pageHeader: 'Testing....'})
     //Components Life Cycle
     componentDidMount(){
-        console.log('did mount');
+        //ajax...
+        axios.get('/api/contests')
+            .then(resp => {
+                //console.log(resp.data.contests);
+                this.setState({
+                    contests: resp.data.contests
+                });
+            })
+            .catch(console.error)
+        //console.log('did mount');
         //debugger;
-        //ajax
         //timers, listeners
+
     }
     componentWillUnmount(){
-        console.log('will mount');
+        //console.log('will mount');
         //debugger;
         //clean timers, listeners
     }
@@ -36,12 +51,15 @@ class App extends React.Component{
             <div className="App">
                 <Header message={this.state.pageHeader}/>
                 <div>
-                    ...
+                    {this.state.contests.map(contest =>
+                        <ContestPreview key={contest.id} {...contest}/>
+                    )}
                 </div>
             </div>
         );
     }
 }
+//every time you have a map call you need to provide a unique key- don't use array index!!!
 
 /*
  setTimeout(() => {
@@ -50,7 +68,7 @@ class App extends React.Component{
  document.getElementById('root')
  );
  }, 4000);
- */
+
 
 //without state
 /*const App = () => {
