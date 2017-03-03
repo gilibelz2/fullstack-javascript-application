@@ -4,14 +4,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+
 import data from './testData';
 
 import App from './components/App';
 
 ReactDOM.render(
-    <App />,
+    <App initialContests={window.initialData.contests}/>,
     document.getElementById('root')
 );
+//console.log(resp.data.contests);
+//this.setState({
+//    contests: resp.data.contests
+//});
+
+//console.log('did mount');
+//debugger;
+//timers, listeners
+
+
 
 //<App contests={data.contests}/>,--static data
 //contests={[]}

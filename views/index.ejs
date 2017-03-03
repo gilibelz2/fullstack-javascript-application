@@ -1,10 +1,8 @@
+<script type="text/javascript">
+    window.initialData = <%- JSON.stringify(initialData) -%>;
+</script>
+
 <%- include('header') -%>
-    <div id="root"><%- content -%></div>
+    <div id="root"><%- initialMarkup -%></div>
 <%- include('footer') -%>
 
-<!--<h1>The EJS page</h1>
-<p>***************************************</p>
-<p>This is the EJS page of the project:)</p>
-<p><%= Math.random() %></p>
-<p><%= content %></p>
-<p><%- content %></p>-->

@@ -2,7 +2,7 @@
  * Created by Gili Belz on 02/03/2017.
  */
 import React from 'react';
-import axios from 'axios';
+
 //import ReactDOM from 'react-dom';
 import Header from './Header';
 import ContestPreview from './ContestPreview';
@@ -22,23 +22,12 @@ class App extends React.Component{
     //state with stage 2
     state = {
         pageHeader: 'Naming Contests',
-        contests: []
+        contests: this.props.initialContests
     };
     //for the console: $r.setState({pageHeader: 'Testing....'})
     //Components Life Cycle
     componentDidMount(){
         //ajax...
-        axios.get('/api/contests')
-            .then(resp => {
-                //console.log(resp.data.contests);
-                this.setState({
-                    contests: resp.data.contests
-                });
-            })
-            .catch(console.error)
-        //console.log('did mount');
-        //debugger;
-        //timers, listeners
 
     }
     componentWillUnmount(){
