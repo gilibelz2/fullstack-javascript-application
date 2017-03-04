@@ -3,9 +3,15 @@
  */
 import React from 'react';
 import ContestList from './ContestList';
+import Contest from './Contest';
+import * as api from '../api';
 
 const pushState = (obj, url) =>
     window.history.pushState(obj,'', url);
+
+const onPopState = handler => {
+    window.onpopstate = handler;
+};
 
 //import ReactDOM from 'react-dom';
 import Header from './Header';
@@ -24,34 +30,81 @@ class App extends React.Component{
     //    this.state = { test: 42 };
     //}
     //state with stage 2
-    state = {
-        pageHeader: 'Naming Contests',
-        contests: this.props.initialContests
+    static propTypes = {
+        initialData: React.PropTypes.object.isRequired
     };
+    state = this.props.initialData;
     //for the console: $r.setState({pageHeader: 'Testing....'})
     //Components Life Cycle
     componentDidMount(){
         //ajax...
-
+        onPopState((event) => {
+            this.setState({
+                currentContestId: (event.state || {}).currentContestId
+            });
+        });
     }
     componentWillUnmount(){
         //console.log('will mount');
         //debugger;
         //clean timers, listeners
+        onPopState(null);
     }
     fetchContest = (contestId) => {
         pushState(
             { currentContestId : contestId },
             `/contest/${contestId}`
         );
+        //lookup the contest
+        //this.state.contests[contestId]
+        api.fetchContest(contestId).then(contest => {
+            this.setState({
+                currentContestId: contest.id,
+                contests: {
+                    ...this.state.contests,
+                    [contest.id]: contest
+                }
+            });
+        });
     } ;
+    fetchContestList = (contestId) => {
+        pushState(
+            { currentContestId : null },
+            `/`
+        );
+        //lookup the contest
+        //this.state.contests[contestId]
+        api.fetchContestList().then(contests => {
+            this.setState({
+                currentContestId: null,
+                contests
+            });
+        });
+    } ;
+    currentContest(){
+        return this.state.contests[this.state.currentContestId]
+    }
+    pageHeader(){
+        if(this.state.currentContestId){
+            return this.currentContest().contestName;
+        }
+        return 'Naming Contests';
+    }
+    currentContent(){
+        if(this.state.currentContestId) {
+            return <Contest
+                contestListClick= {this.fetchContestList}
+                {...this.currentContest()} />;
+        }
+        return <ContestList
+            onContestClick = {this.fetchContest}
+            contests={this.state.contests} />;
+    }
     render(){
         return (
             <div className="App">
-                <Header message={this.state.pageHeader}/>
-                <ContestList
-                    onContestClick = {this.fetchContest}
-                    contests={this.state.contests} />
+                <Header message={this.pageHeader()}/>
+                {this.currentContent()}
             </div>
         );
     }
