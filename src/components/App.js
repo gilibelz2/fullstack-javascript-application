@@ -13,31 +13,14 @@ const onPopState = handler => {
     window.onpopstate = handler;
 };
 
-//import ReactDOM from 'react-dom';
 import Header from './Header';
 
-
-//import data from '../testData';
-
-//class base component
-//with state
-//React.createClass..OR
-//extends React.Component
 class App extends React.Component{
-    //state--not needed because of stage 2
-    //constructor(props){
-    //    super(props);
-    //    this.state = { test: 42 };
-    //}
-    //state with stage 2
     static propTypes = {
         initialData: React.PropTypes.object.isRequired
     };
     state = this.props.initialData;
-    //for the console: $r.setState({pageHeader: 'Testing....'})
-    //Components Life Cycle
     componentDidMount(){
-        //ajax...
         onPopState((event) => {
             this.setState({
                 currentContestId: (event.state || {}).currentContestId
@@ -45,9 +28,6 @@ class App extends React.Component{
         });
     }
     componentWillUnmount(){
-        //console.log('will mount');
-        //debugger;
-        //clean timers, listeners
         onPopState(null);
     }
     fetchContest = (contestId) => {
@@ -55,14 +35,12 @@ class App extends React.Component{
             { currentContestId : contestId },
             `/contest/${contestId}`
         );
-        //lookup the contest
-        //this.state.contests[contestId]
         api.fetchContest(contestId).then(contest => {
             this.setState({
-                currentContestId: contest.id,
+                currentContestId: contest._id,
                 contests: {
                     ...this.state.contests,
-                    [contest.id]: contest
+                    [contest._id]: contest
                 }
             });
         });
@@ -72,8 +50,6 @@ class App extends React.Component{
             { currentContestId : null },
             `/`
         );
-        //lookup the contest
-        //this.state.contests[contestId]
         api.fetchContestList().then(contests => {
             this.setState({
                 currentContestId: null,
@@ -81,6 +57,16 @@ class App extends React.Component{
             });
         });
     } ;
+    fetchNames= (nameIds) => {
+      if(nameIds.length === 0) {
+          return;
+      }
+      api.fetchNames(nameIds).then(names => {
+          this.setState({
+              names
+          });
+      }) ;
+    };
     currentContest(){
         return this.state.contests[this.state.currentContestId]
     }
@@ -90,10 +76,36 @@ class App extends React.Component{
         }
         return 'Naming Contests';
     }
+    lookupName= (nameId) => {
+        if(!this.state.names || !this.state.names[nameId]){
+            return {
+                name: '...'
+            };
+        }
+        return this.state.names[nameId];
+    };
+    addName =(newName, contestId) => {
+        api.addName(newName, contestId).then(resp =>
+            this.setState({
+                contests: {
+                    ...this.state.contests,
+                    [resp.updatedContest._id]: resp.updatedContest
+                },
+                names: {
+                    ...this.state.names,
+                    [resp.newName._id]: resp.newName
+                }
+            })
+        )
+            .catch(console.error);
+    };
     currentContent(){
         if(this.state.currentContestId) {
             return <Contest
                 contestListClick= {this.fetchContestList}
+                fetchNames={this.fetchNames}
+                lookupName={this.lookupName}
+                addName={this.addName}
                 {...this.currentContest()} />;
         }
         return <ContestList
@@ -110,42 +122,5 @@ class App extends React.Component{
     }
 }
 //every time you have a map call you need to provide a unique key- don't use array index!!!
-
-/*
- setTimeout(() => {
- ReactDOM.render(
- <h2>......</h2>,
- document.getElementById('root')
- );
- }, 4000);
-
-
-//without state
-/*const App = () => {
- return (
- <div className="App">
- <Header message="Naming Contests"/>
- <div>
- ...
- </div>
- </div>
- );
- };*/
-
-/*
- //props validation---- types check
- App.propTypes= {
- headerMessage: React.PropTypes.string.isRequired //assert string and is required- not needed when there is a defaultProps
- };
- */
-
-//props validation---- types check
-/*App.propTypes= {
- headerMessage: React.PropTypes.string //assert string and is required- not needed when there is a defaultProps
- };*/
-
-/*App.defaultProps= {
- headerMessage: 'Hello You!'
- };*/
 
 export default App;
